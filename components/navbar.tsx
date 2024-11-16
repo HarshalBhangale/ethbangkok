@@ -20,7 +20,7 @@ const Navbar = () => {
   }, [isMobileMenuOpen]);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md mx-5 md:mx-20 lg:mx-28 xl:mx-36 2xl:mx-44 md:px-10 my-8 border border-neutral-300 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-[3rem] shadow-lg relative overflow-hidden">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md mx-5 md:mx-20 lg:mx-28 xl:mx-36 2xl:mx-44 md:px-10 my-8 border border-neutral-300 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-[3rem] shadow-lg relative overflow-hidden ">
       <div
         className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center opacity-20"
         style={{ backgroundImage: "url('/images/navbar-bg.jpg')" }}

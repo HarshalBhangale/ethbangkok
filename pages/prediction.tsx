@@ -17,7 +17,6 @@ import {
   Timer,
   Trophy,
   History,
-  Sparkles,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import axios from 'axios';
@@ -51,18 +50,7 @@ type Message = {
 };
 
 const cryptoPairs: CryptoPair[] = [
-  {
-    id: 'near',
-    name: 'Near',
-    icon: () => (
-      <svg width="24" height="24" viewBox="0 0 96 96" fill="none">
-        <path d="M47.8948 95.1217C74.162 95.1217 95.4557 73.828 95.4557 47.5608C95.4557 21.2937 74.162 0 47.8948 0C21.6277 0 0.333984 21.2937 0.333984 47.5608C0.333984 73.828 21.6277 95.1217 47.8948 95.1217Z" fill="#00EC97"/>
-        <path d="M62.1632 26.1583L52.2547 40.8229C51.462 42.0119 53.0473 43.201 53.84 42.0119L63.7485 33.6888C64.1449 33.2924 64.5412 33.6888 64.5412 34.0851V60.6399C64.5412 61.0363 64.1449 61.0363 63.7485 61.0363L34.023 25.762C33.2303 24.573 31.645 23.7803 30.0596 23.7803H29.2669C26.4925 23.7803 24.1145 26.1583 24.1145 28.9327V66.1887C24.1145 68.9631 26.4925 71.3411 29.2669 71.3411C30.8523 71.3411 32.834 70.5484 33.6267 68.9631L43.5352 54.2985C44.3279 53.1095 42.7425 51.9204 41.9498 53.1095L32.0413 61.4326C31.645 61.829 31.2486 61.4326 31.2486 61.0363V34.4815C31.645 34.0851 32.0413 33.6888 32.0413 34.0851L61.7668 69.3594C62.5595 70.5484 64.1449 71.3411 65.7302 71.3411H66.9193C69.6936 71.3411 72.0717 68.9631 72.0717 66.1887V28.9327C71.6753 26.1583 69.2973 23.7803 66.5229 23.7803C64.9376 23.7803 63.3522 24.573 62.1632 26.1583Z" fill="black"/>
-      </svg>
-    ),
-    color: '#000000',
-    gradient: 'from-black to-gray-700',
-  },
+
   {
     id: 'bitcoin',
     name: 'Bitcoin',
@@ -89,13 +77,24 @@ const cryptoPairs: CryptoPair[] = [
     color: '#627EEA',
     gradient: 'from-[#627EEA] to-[#8799F0]',
   },
+  {
+    id: 'near',
+    name: 'Near',
+    icon: () => (
+      <svg width="24" height="24" viewBox="0 0 96 96" fill="none">
+        <path d="M47.8948 95.1217C74.162 95.1217 95.4557 73.828 95.4557 47.5608C95.4557 21.2937 74.162 0 47.8948 0C21.6277 0 0.333984 21.2937 0.333984 47.5608C0.333984 73.828 21.6277 95.1217 47.8948 95.1217Z" fill="#00EC97"/>
+        <path d="M62.1632 26.1583L52.2547 40.8229C51.462 42.0119 53.0473 43.201 53.84 42.0119L63.7485 33.6888C64.1449 33.2924 64.5412 33.6888 64.5412 34.0851V60.6399C64.5412 61.0363 64.1449 61.0363 63.7485 61.0363L34.023 25.762C33.2303 24.573 31.645 23.7803 30.0596 23.7803H29.2669C26.4925 23.7803 24.1145 26.1583 24.1145 28.9327V66.1887C24.1145 68.9631 26.4925 71.3411 29.2669 71.3411C30.8523 71.3411 32.834 70.5484 33.6267 68.9631L43.5352 54.2985C44.3279 53.1095 42.7425 51.9204 41.9498 53.1095L32.0413 61.4326C31.645 61.829 31.2486 61.4326 31.2486 61.0363V34.4815C31.645 34.0851 32.0413 33.6888 32.0413 34.0851L61.7668 69.3594C62.5595 70.5484 64.1449 71.3411 65.7302 71.3411H66.9193C69.6936 71.3411 72.0717 68.9631 72.0717 66.1887V28.9327C71.6753 26.1583 69.2973 23.7803 66.5229 23.7803C64.9376 23.7803 63.3522 24.573 62.1632 26.1583Z" fill="black"/>
+      </svg>
+    ),
+    color: '#000000',
+    gradient: 'from-black to-gray-700',
+  },
 ];
 
 const formatCurrency = (value: number): string =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-
 const GamePage: React.FC = () => {
-  const [selectedCrypto, setSelectedCrypto] = useState<CryptoPair>(() => cryptoPairs[0]);
+  const [selectedCrypto, setSelectedCrypto] = useState<CryptoPair>(cryptoPairs[0]);
   const [priceData, setPriceData] = useState<PriceData[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number>(100);
   const [priceChange, setPriceChange] = useState<number>(0);
@@ -139,31 +138,47 @@ const GamePage: React.FC = () => {
   };
   const fetchPrice = async () => {
     try {
+      // Validate the selectedCrypto before making the request
+      if (!selectedCrypto || !selectedCrypto.id) {
+        console.error('SelectedCrypto is not defined or invalid.');
+        return;
+      }
+  
+      // Fetch data from CoinGecko API
       const response = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
-        params: { ids: selectedCrypto.id, vs_currencies: 'usd', include_24hr_change: 'true' },
+        params: {
+          ids: selectedCrypto.id, // Use the crypto ID
+          vs_currencies: 'usd', // Get price in USD
+          include_24hr_change: 'true', // Include 24-hour change
+        },
       });
-      const price = response.data[selectedCrypto.id].usd;
-      const change = response.data[selectedCrypto.id].usd_24h_change;
-      setCurrentPrice(price);
-      setPriceChange(change);
-      setPriceData((prev) => [...prev.slice(1), { timestamp: Date.now(), price }]);
+  
+      // Extract and update price and change data
+      const price = response.data[selectedCrypto.id]?.usd; // Ensure valid response
+      const change = response.data[selectedCrypto.id]?.usd_24h_change;
+  
+      if (price !== undefined && change !== undefined) {
+        setCurrentPrice(price);
+        setPriceChange(change);
+  
+        // Update the priceData array for the chart
+        setPriceData((prev) => [
+          ...prev.slice(-49), // Keep only the last 50 data points
+          { timestamp: Date.now(), price },
+        ]);
+      } else {
+        console.error('Invalid data received from API:', response.data);
+      }
     } catch (error) {
-      console.error('Error fetching live price:', error);
+      console.error('Error fetching live price:', error.message || error);
     }
   };
-
   useEffect(() => {
-    fetchPrice();
-    const interval = setInterval(fetchPrice, 2000);
-    return () => clearInterval(interval);
-  }, [selectedCrypto]);
-
-  useEffect(() => {
-    const timer = setInterval(() => setCountdown((prev) => (prev > 0 ? prev - 1 : 60)), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-
+    fetchPrice(); // Initial fetch
+    const interval = setInterval(fetchPrice, 2000); // Fetch every 2 seconds
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [selectedCrypto]); // Re-run fetchPrice when selectedCrypto changes
+  
   const handleSendMessage = () => {
     if (!userInput.trim()) return;
     setMessages((prev) => [...prev, { sender: 'user', text: userInput }]);
@@ -177,7 +192,7 @@ const GamePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDF1E7] p-6">
+    <div className="min-h-screen bg-cover bg-center p-6" style={{ backgroundImage: "url('/images/bg2.jpg')" }}>
             <Navbar />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-20">
 
@@ -197,31 +212,50 @@ const GamePage: React.FC = () => {
           </div>
 
           {/* Price Display and Chart */}
-          <Card className="bg-black  bg-blur-sm border-[#FFE1A3] shadow-lg overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-baseline gap-4 mb-6">
-                <div className="text-4xl font-bold">{formatCurrency(currentPrice)}</div>
-                <span className={`text-lg font-semibold ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {priceChange >= 0 ? '↑' : '↓'} {Math.abs(priceChange).toFixed(2)}%
+          <Card className="bg-gradient-to-br from-gray-900 to-black border-2 border-[#FFE1A3] shadow-2xl rounded-3xl overflow-hidden">
+            <CardContent className="p-8">
+              <div className="flex items-baseline gap-6 mb-8">
+                <div className="text-5xl font-extrabold text-white">{formatCurrency(currentPrice)}</div>
+                <span className={`text-xl font-bold ${priceChange >= 0 ? 'text-green-400' : 'text-red-400'} flex items-center`}>
+                  {priceChange >= 0 ? <ArrowUp className="w-6 h-6 mr-1" /> : <ArrowDown className="w-6 h-6 mr-1" />}
+                  {Math.abs(priceChange).toFixed(2)}%
                 </span>
               </div>
-              <div className="h-64">
+              <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={priceData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#FFE1A3" />
-                    <XAxis dataKey="timestamp" tickFormatter={(ts) => new Date(ts).toLocaleTimeString()} stroke="#9CA3AF" />
-                    <YAxis stroke="#9CA3AF" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 225, 163, 0.1)" />
+                    <XAxis 
+                      dataKey="timestamp" 
+                      tickFormatter={(ts) => new Date(ts).toLocaleTimeString()} 
+                      stroke="#9CA3AF"
+                      tick={{ fill: '#9CA3AF' }}
+                    />
+                    <YAxis 
+                      stroke="#9CA3AF"
+                      tick={{ fill: '#9CA3AF' }}
+                      tickFormatter={(value) => `$${value.toLocaleString()}`}
+                    />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: '#FDF1E7',
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         border: '1px solid #FFE1A3',
                         borderRadius: '8px',
-                        padding: '8px',
+                        padding: '12px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                       }}
-                      formatter={(value) => formatCurrency(value)}
-                      labelFormatter={(ts) => new Date(ts).toLocaleTimeString()}
+                      formatter={(value) => [`${formatCurrency(value)}`, 'Price']}
+                      labelFormatter={(ts) => new Date(ts).toLocaleString()}
+                      cursor={{ stroke: '#FFE1A3', strokeWidth: 2 }}
                     />
-                    <Line type="monotone" dataKey="price" stroke={selectedCrypto.color} strokeWidth={2} dot={false} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="price" 
+                      stroke={selectedCrypto.color} 
+                      strokeWidth={3} 
+                      dot={false}
+                      activeDot={{ r: 8, fill: selectedCrypto.color, stroke: '#FFF', strokeWidth: 2 }}
+                    />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -263,18 +297,29 @@ const GamePage: React.FC = () => {
           </Card>
           
           {/* Bet History */}
-          <Card className="bg-white border-[#FFE1A3] shadow-lg">
+          <Card className="bg-white/90 backdrop-blur-sm border-[#FFE1A3] shadow-lg transform transition-all duration-300 hover:scale-[1.02]">
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-4">
-                <History className="w-5 h-5" />
+                <History className="w-5 h-5 animate-spin-slow" />
                 <h3 className="text-xl font-bold">Recent Bets</h3>
               </div>
               <div className="space-y-2">
                 {betHistory.slice(0, 5).map((bet, index) => (
-                  <div key={index} className={`p-4 rounded-lg ${bet.outcome === 'Win' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                  <div
+                    key={index}
+                    className={`p-4 rounded-lg transform transition-all duration-300 hover:scale-[1.02] ${
+                      bet.outcome === 'Win'
+                        ? 'bg-gradient-to-r from-green-50 to-green-100 border border-green-200'
+                        : 'bg-gradient-to-r from-red-50 to-red-100 border border-red-200'
+                    }`}
+                  >
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">{bet.timestamp}</span>
-                      <span className={bet.profit >= 0 ? 'text-green-600' : 'text-red-600'}>
+                      <span className={`${
+                        bet.profit >= 0 
+                          ? 'text-green-600 animate-bounce-subtle' 
+                          : 'text-red-600'
+                      }`}>
                         {bet.profit >= 0 ? '+' : ''}{formatCurrency(bet.profit)}
                       </span>
                     </div>

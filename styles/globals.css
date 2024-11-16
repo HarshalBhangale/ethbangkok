@@ -42,3 +42,16 @@
 .glow-effect:hover {
   box-shadow: 0px 4px 20px rgba(72, 255, 167, 0.7);
 }
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.8), 0 0 20px rgba(255, 255, 0, 0.6);
+  }
+  100% {
+    text-shadow: 0 0 20px rgba(255, 255, 0, 1), 0 0 30px rgba(255, 255, 0, 0.8);
+  }
+}
+
+.animate-glow {
+  animation: glow 1.5s infinite alternate;
+}
