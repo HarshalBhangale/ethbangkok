@@ -1,200 +1,110 @@
+"use client";
+
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
-import {
-  ChevronDownIcon,
-  Bars3Icon,
-  XMarkIcon,
-  InformationCircleIcon,
-} from "@heroicons/react/24/outline";
-import { Logo } from "./logo";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { usePrivy } from "@privy-io/react-auth";
 
-function classNames(...classes: Array<string | boolean>): string {
-  return classes.filter(Boolean).join(" ");
-}
+const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const { ready, authenticated, logout } = usePrivy();
 
-/**
- * make sure you are passing router.pathname and not
- * router.asPath since we want to have stripped any
- * fragments, query params, or trailing slashes
- */
-const extractTabFromPath = (path: string) => {
-  return path.split("/").pop() as string;
-};
-
-export type NavbarItem = {
-  id: string;
-  name: string;
-  resource: string;
-};
-
-type NavbarProps = {
-  accountId: string;
-  appName: string;
-  items: Array<NavbarItem>;
-};
-
-export default function Navbar({ items, accountId, appName }: NavbarProps) {
-  const router = useRouter();
-  const resourceId = router.query.id;
-  const selected = extractTabFromPath(router.pathname);
-
-  const selectedItemClass =
-    "hover:cursor-pointer rounded-full bg-gray-900 px-3 py-2 text-lg font-medium text-white";
-  const unselectedItemClass =
-    "hover:cursor-pointer rounded-full px-3 py-2 text-lg font-medium text-gray-300 hover:bg-gray-700 hover:text-white";
-
-  // Navigate to a resource sub-page:
-  // /apps/:appId/settings
-  // /accounts/:accountId/users
-  const navigateTo = (item: NavbarItem) => {
-    router.push(`/${item.resource}/${resourceId}/${item.id}`);
-  };
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isMobileMenuOpen]);
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
-      {({ open }) => (
-        <>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex h-16 items-center justify-between">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="block h-8 w-auto lg:hidden mb-2">
-                    <Logo />
-                  </div>
-                  <div className="hidden h-8 w-auto lg:block mb-2 hover:cursor-pointer">
-                    <Logo />
-                  </div>
-                </div>
-                <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
-                    {items ? (
-                      items.map((item) => {
-                        return (
-                          <button
-                            key={item.id}
-                            onClick={() => {
-                              navigateTo(item);
-                            }}
-                            className={
-                              selected === item.id
-                                ? selectedItemClass
-                                : unselectedItemClass
-                            }
-                          >
-                            {item.name}
-                          </button>
-                        );
-                      })
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white"
-                  >
-                    <InformationCircleIcon
-                      className="h-6 w-6"
-                      aria-hidden="true"
-                    />
-                  </button>
-                  <p className="text-white">{appName}</p>
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md mx-5 md:mx-20 lg:mx-28 xl:mx-36 2xl:mx-44 md:px-10 my-8 border border-neutral-300 bg-gradient-to-r from-yellow-100 to-orange-100 rounded-[3rem] shadow-lg relative overflow-hidden">
+      <div
+        className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center opacity-20"
+        style={{ backgroundImage: "url('/images/navbar-bg.jpg')" }}
+      ></div>
+      <div className="max-w-screen-3xl flex flex-wrap items-center justify-between px-4 py-4 relative z-10">
+        
+        {/* Logo */}
+        <div className="flex items-center">
+          <Link href="/" className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 tracking-wider">
+            Royale Squad
+          </Link>
+        </div>
 
-                  {/* Profile dropdown */}
-                  <Menu as="div" className="relative ml-3">
-                    <div className="flex bg-gray-800 rounded-full items-center hover:ring-white hover:ring-2 hover:ring-offset-2 hover:ring-offset-gray-800 hover:outline-none hover:cursor-pointer">
-                      <Menu.Button className="flex rounded-full text-sm">
-                        <span className="sr-only">Open user menu</span>
-                        <div className="h-8 w-8 rounded-full">
-                          <Image
-                            className="h-8 w-8 rounded-full"
-                            src="/images/avatar.png"
-                            alt="avatar placeholder"
-                            height={32}
-                            width={32}
-                          />
-                        </div>
-                      </Menu.Button>
-                      <ChevronDownIcon
-                        className="ml-1 h-4 w-4 text-white"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href={`/accounts/${accountId}`}
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Your account
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Settings
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Sign out
-                            </a>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
-              </div>
-              <div className="-mr-2 flex sm:hidden">
-                {/* Mobile menu button */}
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-            </div>
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          type="button"
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-200 rounded-lg lg:hidden bg-gray-700/70 hover:bg-gray-800/80 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 ease-in-out transform hover:scale-105"
+          aria-expanded={isMobileMenuOpen ? "true" : "false"}
+        >
+          <span className="sr-only">Open main menu</span>
+          <svg
+            className="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+
+        {/* Links */}
+        <div
+          className={`w-full lg:block lg:w-auto ${isMobileMenuOpen ? "block" : "hidden"} transition-all duration-300 ease-in-out`}
+          id="navbar-default"
+        >
+          <ul className="font-medium font-primary flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-10 md:mt-0  lg:bg-transparent lg:backdrop-filter-none lg:backdrop-blur-none shadow-lg lg:shadow-none">
+            {["Dashboard", "Leaderboard", "Mybets", "Profilea"].map((item, index) => (
+              <li key={index}>
+                <Link
+                  href={`/${item.toLowerCase()}`}
+                  className={`block py-2 px-3 rounded-lg ${
+                    pathname === `/${item.toLowerCase()}`
+                      ? "text-purple-600 font-semibold bg-purple-100"
+                      : "text-gray-700 hover:text-purple-600"
+                  } transition-colors duration-300 ease-in-out hover:bg-purple-100 lg:hover:bg-transparent`}
+                  aria-current={pathname === `/${item.toLowerCase()}` ? "page" : undefined}
+                >
+                  {item}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          {/* Mobile Logout Button */}
+          <div className="flex md:hidden justify-center mt-4">
+            <button
+              onClick={logout}
+              className="bg-red-600 hover:bg-red-700 text-white text-sm px-6 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg"
+            >
+              Logout
+            </button>
           </div>
-        </>
-      )}
-    </Disclosure>
+        </div>
+
+        {/* Desktop Logout Button */}
+        <div className="hidden md:flex items-center">
+          <button
+            onClick={logout}
+            className="bg-gradient-to-b from-purple-600 to-purple-700 text-white text-sm px-6 py-2 rounded-full transition duration-300 ease-in-out shadow-lg transform hover:scale-105 hover:from-purple-700 hover:to-purple-800"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
   );
-}
+};
+
+export default Navbar;

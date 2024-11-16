@@ -3,7 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  /* normal */
+  /* Luckiest Guy */
+  @font-face {
+    font-family: "Luckiest Guy";
+    src: url("/fonts/LuckiestGuy.ttf") format("truetype");
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+  }
+
+  /* Other font-face definitions */
   @font-face {
     font-family: "Adelle Sans";
     src: url("/fonts/AdelleSans-Regular.woff2") format("woff2");
@@ -12,7 +21,6 @@
     font-weight: 300;
   }
 
-  /* semibold */
   @font-face {
     font-family: "Adelle Sans";
     src: url("/fonts/AdelleSans-Semibold.woff2") format("woff2");
@@ -20,4 +28,17 @@
     font-display: swap;
     font-weight: 600;
   }
+
+  :root {
+    --radius: 0.5rem;
+  }
+
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+
+* {
+  font-family: 'Luckiest Guy', cursive;
+}
+}
+.glow-effect:hover {
+  box-shadow: 0px 4px 20px rgba(72, 255, 167, 0.7);
 }

@@ -1,34 +1,8 @@
-import Portal from "../components/graphics/portal";
 import { useLogin } from "@privy-io/react-auth";
-import { PrivyClient } from "@privy-io/server-auth";
-import { GetServerSideProps } from "next";
-import Head from "next/head";
 import { useRouter } from "next/router";
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const cookieAuthToken = req.cookies["privy-token"];
-
-  // If no cookie is found, skip any further checks
-  if (!cookieAuthToken) return { props: {} };
-
-  const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
-  const PRIVY_APP_SECRET = process.env.PRIVY_APP_SECRET;
-  const client = new PrivyClient(PRIVY_APP_ID!, PRIVY_APP_SECRET!);
-
-  try {
-    const claims = await client.verifyAuthToken(cookieAuthToken);
-    // Use this result to pass props to a page for server rendering or to drive redirects!
-    // ref https://nextjs.org/docs/pages/api-reference/functions/get-server-side-props
-    console.log({ claims });
-
-    return {
-      props: {},
-      redirect: { destination: "/dashboard", permanent: false },
-    };
-  } catch (error) {
-    return { props: {} };
-  }
-};
+import Head from "next/head";
+import Image from "next/image";
+import Cover from "../public/images/cover.png";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -39,24 +13,42 @@ export default function LoginPage() {
   return (
     <>
       <Head>
-        <title>Login · Privy</title>
+        <title>Lucky Masters | Join the Fun</title>
+        <meta
+          name="description"
+          content="Where luck meets fun! Bet, play, and win with our exciting games."
+        />
       </Head>
+      <main
+        className="flex min-h-screen min-w-full bg-cover bg-center flex-col items-center justify-center"
+        style={{ backgroundImage: "url('/images/bg.jpg')" }}
+      >
+                <div className="text-center p-8 bg-black bg-opacity-50 rounded-lg shadow-2xl">
+        {/* Image Component for Cover */}
+        <div className="w-full max-w-4xl mb-6">
+          <Image
+            src={Cover}
+            alt="Cover Image"
+            className="rounded-lg shadow-xl"
+            layout="responsive"
+            priority
+          />
+        </div>
 
-      <main className="flex min-h-screen min-w-full">
-        <div className="flex bg-privy-light-blue flex-1 p-6 justify-center items-center">
-          <div>
-            <div>
-              <Portal style={{ maxWidth: "100%", height: "auto" }} />
-            </div>
-            <div className="mt-6 flex justify-center text-center">
-              <button
-                className="bg-violet-600 hover:bg-violet-700 py-3 px-6 text-white rounded-lg"
-                onClick={login}
-              >
-                Log in
-              </button>
-            </div>
-          </div>
+        {/* Text Content */}
+
+          <h1 className="text-7xl font-luckiest text-yellow-400 mb-6">
+            Royale Master
+          </h1>
+          <p className="text-2xl font-semibold text-white mb-10">
+            Where luck meets fun! Bet, play, and win with our exciting games.
+          </p>
+          <button
+            className="bg-yellow-500 hover:bg-yellow-600 py-4 px-12 text-black text-xl font-bold rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+            onClick={login}
+          >
+            Join the Fun
+          </button>
         </div>
       </main>
     </>

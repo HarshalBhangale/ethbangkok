@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { PrivyProvider } from "@privy-io/react-auth";
+// import Capsule, { Environment } from "@usecapsule/react-sdk";
+// const capsule = new Capsule(Environment.BETA, process.env.REACT_APP_CAPSULE_API_KEY);
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

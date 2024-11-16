@@ -14,13 +14,22 @@
   "dependencies": {
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.12",
-    "@privy-io/react-auth": "1.94.0",
+    "@privy-io/react-auth": "^1.94.0",
     "@privy-io/server-auth": "1.16.2",
-    "@tailwindcss/forms": "^0.5.3",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@tailwindcss/forms": "^0.5.9",
+    "@usecapsule/react-sdk": "^4.7.0",
     "axios": "^1.7.7",
-    "next": "latest",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.456.0",
+    "next": "^15.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.13.3",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@tsconfig/next": "^2.0.0",
@@ -28,13 +37,13 @@
     "@tsconfig/strictest": "^2.0.1",
     "@types/node": "^18.19.64",
     "@types/react": "^18.3.12",
-    "autoprefixer": "^10.4.7",
+    "autoprefixer": "^10.4.20",
     "dotenv-cli": "^6.0.0",
     "eslint": "^8.23.0",
     "eslint-config-next": "12.2.5",
-    "postcss": "^8.4.14",
-    "tailwindcss": "^3.1.2",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
     "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.6.3"
   }
 }
